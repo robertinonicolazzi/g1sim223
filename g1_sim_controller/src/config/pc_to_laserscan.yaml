@@ -1,32 +1,27 @@
-# ─── pointcloud_to_laserscan — Unitree G1 / Livox Mid360 ──────────────────────
+# ─── pointcloud_to_laserscan — Unitree G1 (simulation) ──────────────────────
 #
-# target_frame: base_link
-#   Projects points into the base_link frame (pelvis, ~0.45m above ground).
-#   LiDAR (livox_frame) is +0.46m above base_link (~0.91m above ground).
+# Pointcloud arrives in base_link frame (pre-transformed by sim_main.py).
+# No TF lookup needed — target_frame matches the incoming frame_id.
 #
-# Height band: chosen to capture wall features while excluding the ground
-# plane (~-0.45m in base_link frame) and keeping a narrow band for consistent
-# scans during humanoid gait sway.
+# base_link (imu_in_torso) is ~0.8m above ground.
+# Ground in base_link frame is at z ≈ -0.8m.
 
 pc_to_ls:
   ros__parameters:
-    target_frame: livox_frame
+    target_frame: base_link
     transform_tolerance: 0.5
 
-    # Lidar is +0.46m above base_link (~0.91m above ground).
-    # Ground in livox_frame is at ~-0.91m.
-    # -0.70 = ~0.21m above ground — captures low obstacles/boxes.
-    #  0.50 = ~1.41m above ground — captures tall obstacles.
-    min_height: -0.70
-    max_height:  0.50
+    # Ground is at ~-0.8m in base_link frame.
+    # -0.50 = ~0.3m above ground — captures low obstacles/boxes.
+    #  0.80 = ~1.6m above ground — captures tall obstacles/walls.
+    min_height: -0.50
+    max_height:  0.80
 
     angle_min:        -3.1415
     angle_max:         3.1415
     angle_increment:   0.0087   # ~0.5 deg
     scan_time:         0.1      # 10 Hz
     range_min:         0.3
-    # Matched to slam_toolbox max_laser_range (20m); points beyond are
-    # discarded by SLAM anyway.
     range_max:        20.0
 
     use_inf:     true

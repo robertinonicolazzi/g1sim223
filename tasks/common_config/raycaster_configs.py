@@ -53,7 +53,7 @@ class RayCasterBaseCfg:
             update_period=update_period,
             offset=MultiMeshRayCasterCfg.OffsetCfg(pos=pos_offset),
             mesh_prim_paths=mesh_prim_paths,
-            ray_alignment="world",
+            ray_alignment="base",
             pattern_cfg=patterns.GridPatternCfg(
                 resolution=resolution,
                 size=size,
@@ -99,7 +99,7 @@ class RayCasterBaseCfg:
             update_period=update_period,
             offset=MultiMeshRayCasterCfg.OffsetCfg(pos=pos_offset),
             mesh_prim_paths=mesh_prim_paths,
-            ray_alignment="world",
+            ray_alignment="base",
             pattern_cfg=patterns.LidarPatternCfg(
                 channels=channels,
                 vertical_fov_range=vertical_fov_range,

@@ -18,6 +18,18 @@ import gymnasium as gym
 from pathlib import Path
 import numpy as np
 
+
+def quat_to_rot_matrix_np(qw, qx, qy, qz):
+    """Quaternion (w,x,y,z) to 3x3 rotation matrix."""
+    n = np.sqrt(qw*qw + qx*qx + qy*qy + qz*qz)
+    qw, qx, qy, qz = qw/n, qx/n, qy/n, qz/n
+    return np.array([
+        [1 - 2*(qy*qy + qz*qz), 2*(qx*qy - qz*qw),     2*(qx*qz + qy*qw)],
+        [2*(qx*qy + qz*qw),     1 - 2*(qx*qx + qz*qz),  2*(qy*qz - qx*qw)],
+        [2*(qx*qz - qy*qw),     2*(qy*qz + qx*qw),      1 - 2*(qx*qx + qy*qy)],
+    ])
+
+
 # Isaac Lab AppLauncher
 from isaaclab.app import AppLauncher
 
@@ -542,13 +554,9 @@ def main():
                 if not args_cli.replay_data and "lidar" in env.scene.sensors:
                     if loop_count % LIDAR_PUBLISH_EVERY_N == 0:
                         try:
-
                             lidar_sensor = env.scene.sensors["lidar"]
-                            pc = lidar_sensor.data.ray_hits_w[0].cpu().numpy()
-                            valid = np.isfinite(pc).all(axis=1).sum()
-                            print(f"[Lidar] Total rays: {len(pc)}, Valid hits: {valid}, Inf/nan: {len(pc)-valid}")
-            
-                            # ray_hits_w shape: (N_sensors, N_rays, 3)
+
+                            # ray_hits_w shape: (N_envs, N_rays, 3) — world frame
                             point_cloud = lidar_sensor.data.ray_hits_w[0]  # env 0 → (N_rays, 3)
 
                             if point_cloud is not None:
@@ -559,7 +567,24 @@ def main():
                                 pc_valid = pc_np[valid_mask]
 
                                 if len(pc_valid) > 0:
-                                    lidar_dds.publish(pc_valid, frame_id="odom")
+                                    # Transform from world frame to base_link frame.
+                                    # base_link pose = imu_in_torso (same as TF bridge publishes).
+                                    robot_data = env.scene["robot"].data
+                                    body_names = robot_data.body_names
+                                    imu_idx = body_names.index("imu_in_torso")
+                                    base_pos = robot_data.body_link_pose_w[0, imu_idx, :3].cpu().numpy()
+                                    base_quat = robot_data.body_link_pose_w[0, imu_idx, 3:7].cpu().numpy()  # (w,x,y,z)
+
+                                    R_base2w = quat_to_rot_matrix_np(*base_quat)
+                                    # Row-vector: p_base = (p_world - t_base) @ R_base2w
+                                    pc_base = (pc_valid - base_pos) @ R_base2w
+
+                                    if loop_count % 500 == 0:
+                                        print(f"[Lidar] Valid hits: {len(pc_valid)}, "
+                                              f"base z: {base_pos[2]:.2f}, "
+                                              f"pc z range: [{pc_base[:,2].min():.2f}, {pc_base[:,2].max():.2f}]")
+
+                                    lidar_dds.publish(pc_base, frame_id="base_link")
                                 else:
                                     if loop_count % 500 == 0:
                                         print("[Lidar] Warning: all rays missed (no valid hit points)")

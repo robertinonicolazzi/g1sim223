@@ -43,9 +43,9 @@ class KeyboardController:
         
         # control range
         self.ranges = {
-            'x_vel': (-1.0, 3.0),    # forward velocity
-            'y_vel': (-1.5, 1.5),   # lateral velocity
-            'yaw_vel': (-3.14, 3.14), # yaw velocity
+            'x_vel': (-0.9, 1.2),    # forward velocity
+            'y_vel': (-0.5, 0.5),   # lateral velocity
+            'yaw_vel': (-1.57, 1.57), # yaw velocity
             'height': (-0.5, 0.0)    # height
         }
         

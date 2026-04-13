@@ -96,14 +96,6 @@ def generate_launch_description():
         ],
     )
 
-    static_tf_node = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        name='static_tf_base_to_lidar',
-        arguments=['0', '0', '0.46', '0', '0', '0', 'base_link', 'livox_frame'],
-        parameters=[{'use_sim_time': use_sim_time}],
-    )
-
     return LaunchDescription([
         network_interface_arg,
         basic_telemetry_node,
@@ -111,5 +103,4 @@ def generate_launch_description():
         camera_bridge_node,
         pc_to_laserscan_node,
         slam_node,
-        static_tf_node
     ])
