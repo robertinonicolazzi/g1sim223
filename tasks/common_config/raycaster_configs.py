@@ -99,7 +99,7 @@ class RayCasterBaseCfg:
             update_period=update_period,
             offset=MultiMeshRayCasterCfg.OffsetCfg(pos=pos_offset),
             mesh_prim_paths=mesh_prim_paths,
-            ray_alignment="base",
+            ray_alignment="world",
             pattern_cfg=patterns.LidarPatternCfg(
                 channels=channels,
                 vertical_fov_range=vertical_fov_range,
@@ -179,7 +179,7 @@ class RayCasterPresets:
                 ),
             ],
             channels=16,
-            vertical_fov_range=(-15.0, 15.0),
+            vertical_fov_range=(-30.0, 10.0),
             horizontal_fov_range=(0.0, 360.0),
             horizontal_res=0.5,
             pos_offset=(0.0, 0.0, 0.1),
@@ -191,7 +191,7 @@ class RayCasterPresets:
     def g1_room_lidar(cls) -> MultiMeshRayCasterCfg:
         """MultiMeshRayCaster using LidarPattern targeting floor, 4 walls, and 4 boxes.
 
-        16-channel LiDAR with 360-degree horizontal and +/-15 degree vertical FOV.
+        16-channel LiDAR with 360-degree horizontal and -30/+10 degree vertical FOV.
         Attached to the robot d435_link (head area).
         """
         return RayCasterBaseCfg.get_lidar_config(
@@ -235,7 +235,7 @@ class RayCasterPresets:
                 ),
             ],
             channels=16,
-            vertical_fov_range=(-15.0, 15.0),
+            vertical_fov_range=(-30.0, 10.0),
             horizontal_fov_range=(0.0, 360.0),
             horizontal_res=0.5,
             pos_offset=(0.0, 0.0, 0.1),

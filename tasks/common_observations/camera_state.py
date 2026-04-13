@@ -36,7 +36,7 @@ _camera_cache = {
     'camera_keys': None,
     'last_scene_id': None,
     'frame_step': 0,
-    'write_interval_steps': 2,
+    'write_interval_steps': 4,
 }
 
 

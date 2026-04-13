@@ -39,13 +39,13 @@ class KeyboardController:
         }
         
         # Key increment step size   
-        self.increment = 0.05
+        self.increment = 0.1
         
         # control range
         self.ranges = {
-            'x_vel': (-0.6, 1.0),    # forward velocity
-            'y_vel': (-0.5, 0.5),   # lateral velocity
-            'yaw_vel': (-1.57, 1.57), # yaw velocity
+            'x_vel': (-1.0, 3.0),    # forward velocity
+            'y_vel': (-1.5, 1.5),   # lateral velocity
+            'yaw_vel': (-3.14, 3.14), # yaw velocity
             'height': (-0.5, 0.0)    # height
         }
         
@@ -260,7 +260,7 @@ if __name__ == "__main__":
             
         # initialize DDS
         print("initializing DDS communication...")
-        ChannelFactoryInitialize(0)
+        ChannelFactoryInitialize(0, "ens5")
         publisher = ChannelPublisher("rt/run_command/cmd", String_)
         publisher.Init()
         print("DDS communication initialized")

@@ -106,9 +106,9 @@ class ObjectTableSceneCfg(TableCylinderSceneCfgWH):
     contact_forces = ContactSensorCfg(prim_path="/World/envs/env_.*/Robot/.*", history_length=10, track_air_time=True, debug_vis=False)
     # 6. add camera configuration 
     front_camera = CameraPresets.g1_front_camera()
-    left_wrist_camera = CameraPresets.left_gripper_wrist_camera()
-    right_wrist_camera = CameraPresets.right_gripper_wrist_camera()
-    robot_camera = CameraPresets.g1_world_camera()
+    left_wrist_camera = None
+    right_wrist_camera = None
+    robot_camera = None
 
     # 7. lidar target boxes
     lidar_box_1 = RigidObjectCfg(
@@ -271,7 +271,7 @@ class MoveCylinderG129Dex1WholebodyEnvCfg(ManagerBasedRLEnvCfg):
         # simulation settings
         self.sim.dt = 0.005
         self.scene.contact_forces.update_period = self.sim.dt
-        self.sim.render_interval = self.decimation
+        self.sim.render_interval = 8
         self.sim.physx.bounce_threshold_velocity = 0.01
         self.sim.physx.gpu_found_lost_aggregate_pairs_capacity = 1024 * 1024 * 4
         self.sim.physx.gpu_total_aggregate_pairs_capacity = 16 * 1024

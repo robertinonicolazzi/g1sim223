@@ -174,11 +174,6 @@ class DdsRos2Bridge(Node):
         self.dds_cmd_pub.Write(String_(data=cmd_str))
         self.get_logger().info(f"Forwarded - cmd_vel: x={x_vel:.2f}, y={y_vel:.2f}, w={yaw_vel:.2f}")
 
-        with self._state_lock:
-            self._linear_vel[0] = msg.linear.x
-            self._linear_vel[1] = msg.linear.y
-            self._angular_vel[2] = msg.angular.z
-
     # ── Odometry + TF ──────────────────────────────────────────────
 
     def _publish_odometry(self):
@@ -215,14 +210,9 @@ class DdsRos2Bridge(Node):
 
                     self._first_reading = False
             else:
-                # Dead-reckoning fallback
-                yaw = self._get_yaw_from_quaternion()
-                self._position[0] += self._linear_vel[0] * np.cos(yaw) * dt
-                self._position[0] -= self._linear_vel[1] * np.sin(yaw) * dt
-                self._position[1] += self._linear_vel[0] * np.sin(yaw) * dt
-                self._position[1] += self._linear_vel[1] * np.cos(yaw) * dt
-                yaw += self._angular_vel[2] * dt
-                self._orientation = self._quaternion_from_yaw(yaw)
+                # No state available — zero velocities and hold last known pose
+                self._linear_vel = np.array([0.0, 0.0, 0.0])
+                self._angular_vel = np.array([0.0, 0.0, 0.0])
 
             pos = self._position.copy()
             ori = self._orientation.copy()

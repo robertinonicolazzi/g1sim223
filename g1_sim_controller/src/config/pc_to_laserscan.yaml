@@ -15,9 +15,9 @@ pc_to_ls:
 
     # Lidar is +0.46m above base_link (~0.91m above ground).
     # Ground in livox_frame is at ~-0.91m.
-    # -0.85 = ~0.06m above ground — captures low obstacles/boxes.
+    # -0.70 = ~0.21m above ground — captures low obstacles/boxes.
     #  0.50 = ~1.41m above ground — captures tall obstacles.
-    min_height: -0.85
+    min_height: -0.70
     max_height:  0.50
 
     angle_min:        -3.1415
