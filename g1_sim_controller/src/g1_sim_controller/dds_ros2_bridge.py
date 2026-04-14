@@ -103,8 +103,8 @@ class DdsRos2Bridge(Node):
         if self.publish_tf_flag:
             self.tf_broadcaster = TransformBroadcaster(self)
 
-        # Odometry publishing timer (10 Hz)
-        self.create_timer(0.1, self._publish_odometry)
+        # Odometry publishing timer (50 Hz)
+        self.create_timer(0.02, self._publish_odometry)
 
         if self.velocity_scale != 1.0:
             self.get_logger().info(f"Velocity scale: {self.velocity_scale}x")
