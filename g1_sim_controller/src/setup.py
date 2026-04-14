@@ -13,7 +13,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
-        (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
+        (os.path.join('share', package_name, 'config'), glob('config/*.yaml') + glob('config/*.xml')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -27,7 +27,9 @@ setup(
             'basic_telemetry = g1_sim_controller.basic_telemetry:main',
             # 'cmd_vel_bridge = g1_sim_controller.cmd_vel_bridge:main',  # disabled – replaced by dds_ros2_bridge
             'dds_ros2_bridge = g1_sim_controller.dds_ros2_bridge:main',
-            'camera_bridge = g1_sim_controller.camera_bridge:main'
+            'camera_bridge = g1_sim_controller.camera_bridge:main',
+            'pose_publisher = g1_sim_controller.pose_publisher:main',
+            'pause_resume = g1_sim_controller.pause_resume:main'
         ]
     },
 )
