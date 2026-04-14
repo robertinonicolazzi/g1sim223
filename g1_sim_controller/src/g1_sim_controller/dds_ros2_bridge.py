@@ -51,7 +51,7 @@ class DdsRos2Bridge(Node):
         self.declare_parameter('odom_frame', 'odom')
         self.declare_parameter('base_frame', 'base_link')
         self.declare_parameter('publish_tf', True)
-        self.declare_parameter('velocity_scale', 1.0)
+        self.declare_parameter('velocity_scale', 2.2)
 
         network_interface = self.get_parameter('network_interface').get_parameter_value().string_value
         self.default_height = self.get_parameter('default_height').get_parameter_value().double_value
@@ -95,15 +95,16 @@ class DdsRos2Bridge(Node):
         )
 
         self.cmd_vel_sub = self.create_subscription(
-            Twist, '/cmd_vel', self._cmd_vel_callback, 10
+            Twist, '/cmd_vel', self._cmd_vel_callback, 100
         )
+
         self.odom_pub = self.create_publisher(Odometry, '/odom', nav_qos)
 
         if self.publish_tf_flag:
             self.tf_broadcaster = TransformBroadcaster(self)
 
-        # Odometry publishing timer (50 Hz)
-        self.create_timer(0.02, self._publish_odometry)
+        # Odometry publishing timer (10 Hz)
+        self.create_timer(0.1, self._publish_odometry)
 
         if self.velocity_scale != 1.0:
             self.get_logger().info(f"Velocity scale: {self.velocity_scale}x")
@@ -169,10 +170,9 @@ class DdsRos2Bridge(Node):
         y_vel = float(msg.linear.y) * self.velocity_scale
         yaw_vel = float(msg.angular.z) * self.velocity_scale
 
-        cmd_str = str([float(x_vel), -float(y_vel), -float(yaw_vel), float(self.default_height)])
-        self.get_logger().info(f"Forwarding - cmd_vel: x={x_vel:.2f}, y={y_vel:.2f}, w={yaw_vel:.2f}")
+        cmd_str = str([float(x_vel), -float(y_vel), float(yaw_vel), float(self.default_height)])
+        self.get_logger().info(f"Forwarding cmd_vel: x={x_vel:.2f}, y={y_vel:.2f}, w={yaw_vel:.2f}")
         self.dds_cmd_pub.Write(String_(data=cmd_str))
-        self.get_logger().info(f"Forwarded - cmd_vel: x={x_vel:.2f}, y={y_vel:.2f}, w={yaw_vel:.2f}")
 
     # ── Odometry + TF ──────────────────────────────────────────────
 

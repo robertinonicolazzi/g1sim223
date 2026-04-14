@@ -64,16 +64,20 @@ class RunCommandDDS(DDSObject):
                 "run_command": msg.data
             }
             self.output_shm.write_data(cmd_data)
+            self._cached_cmd = cmd_data
         except Exception as e:
             print(f"run_command_dds [{self.node_name}] Failed to process the subscribe data: {e}")
             return {}
-    
+
     def get_run_command(self) -> Optional[Dict[str, Any]]:
         """Get the run command
-        
+
         Returns:
             Dict: the run command, if no command return None
         """
+        cached = getattr(self, '_cached_cmd', None)
+        if cached:
+            return cached
         if self.output_shm:
             return self.output_shm.read_data()
         return None

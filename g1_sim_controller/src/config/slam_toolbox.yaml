@@ -58,7 +58,7 @@ slam_toolbox:
     max_laser_range:     20.0
 
     # ── Misc ─────────────────────────────────────────────────────────────────
-    minimum_travel_distance:   0.0
+    minimum_travel_distance:   0.1
     minimum_travel_heading:    0.175
     transform_publish_period:  0.02
     transform_timeout:         0.5

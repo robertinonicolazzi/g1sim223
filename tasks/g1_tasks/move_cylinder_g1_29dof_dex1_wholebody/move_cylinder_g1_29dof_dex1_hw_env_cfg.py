@@ -40,6 +40,7 @@ class ObjectTableSceneCfg(TableCylinderSceneCfgWH):
     
     # Override: remove warehouse USD from base scene
     room_walls = None
+    world_camera = None
 
     # Ground floor — large thin cuboid at z=0
     ground_floor = AssetBaseCfg(
@@ -114,7 +115,7 @@ class ObjectTableSceneCfg(TableCylinderSceneCfgWH):
     lidar_box_1 = RigidObjectCfg(
         prim_path="/World/envs/env_.*/lidar_box_1",
         init_state=RigidObjectCfg.InitialStateCfg(
-            pos=(-2.9, -2.8, 0.84),
+            pos=(2.1, -2.8, 0.84),
             rot=(1, 0, 0, 0),
         ),
         spawn=sim_utils.CuboidCfg(
@@ -129,7 +130,7 @@ class ObjectTableSceneCfg(TableCylinderSceneCfgWH):
     lidar_box_2 = RigidObjectCfg(
         prim_path="/World/envs/env_.*/lidar_box_2",
         init_state=RigidObjectCfg.InitialStateCfg(
-            pos=(-3.9, -1.8, 0.84),
+            pos=(1.1, -1.8, 0.84),
             rot=(1, 0, 0, 0),
         ),
         spawn=sim_utils.CuboidCfg(
@@ -144,7 +145,7 @@ class ObjectTableSceneCfg(TableCylinderSceneCfgWH):
     lidar_box_3 = RigidObjectCfg(
         prim_path="/World/envs/env_.*/lidar_box_3",
         init_state=RigidObjectCfg.InitialStateCfg(
-            pos=(-4.9, -2.8, 0.4),
+            pos=(0.1, -2.8, 0.4),
             rot=(1, 0, 0, 0),
         ),
         spawn=sim_utils.CuboidCfg(
@@ -159,7 +160,7 @@ class ObjectTableSceneCfg(TableCylinderSceneCfgWH):
     lidar_box_4 = RigidObjectCfg(
         prim_path="/World/envs/env_.*/lidar_box_4",
         init_state=RigidObjectCfg.InitialStateCfg(
-            pos=(-3.9, -3.8, 0.3),
+            pos=(1.1, -3.8, 0.3),
             rot=(1, 0, 0, 0),
         ),
         spawn=sim_utils.CuboidCfg(

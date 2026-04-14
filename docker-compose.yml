@@ -1,0 +1,9 @@
+services:
+  g1_sim_agent:
+    image: inorbitai/agent:ros-humble-4.22.0
+    container_name: g1_sim_agent
+    restart: always
+    network_mode: host
+    ipc: host
+    volumes:
+      - ./inorbit_agent:/root/.inorbit/local/

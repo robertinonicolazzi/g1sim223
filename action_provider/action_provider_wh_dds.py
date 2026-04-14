@@ -334,9 +334,7 @@ class DDSRLActionProvider(ActionProvider):
                     command[3] = float(run_command_data[3])
                 except (IndexError, TypeError) as e:
                     print(f"[WARNING] cannot parse run_command data: {run_command_data}, error: {e}")
-            
-            self.run_command_dds.write_run_command([0.0,0,0,0.8])
-      
+
         # command = [0.5,0.0,0.7,0.8]
         command = torch.tensor(command, device=self.env.device, dtype=torch.float32)
         
