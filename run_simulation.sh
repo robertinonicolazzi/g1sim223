@@ -9,6 +9,5 @@ TELEIMAGER_LOG_LEVEL=WARNING python sim_main.py \
     --enable_dex1_dds \
     --camera_include "front_camera" \
     --camera_jpeg_quality 50 \
-    --solver_iterations 4 \
+    --render_interval 16 \
     --rendering_mode performance \
-    --skip_cvtcolor

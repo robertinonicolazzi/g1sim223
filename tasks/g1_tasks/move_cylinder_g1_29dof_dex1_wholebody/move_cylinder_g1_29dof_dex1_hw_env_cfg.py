@@ -1,5 +1,6 @@
 # Copyright (c) 2025, Unitree Robotics Co., Ltd. All Rights Reserved.
 # License: Apache License, Version 2.0  
+import os
 import tempfile
 import torch
 from dataclasses import MISSING
@@ -30,6 +31,7 @@ from tasks.common_scene.base_scene_pickplace_cylindercfg_wholebody import TableC
 ##
 # Scene definition
 ##
+project_root = os.environ.get("PROJECT_ROOT")
 
 @configclass
 class ObjectTableSceneCfg(TableCylinderSceneCfgWH):
@@ -41,6 +43,15 @@ class ObjectTableSceneCfg(TableCylinderSceneCfgWH):
     # Override: remove warehouse USD from base scene
     room_walls = None
     world_camera = None
+
+    default_usda = AssetBaseCfg(
+        prim_path="/World/envs/env_.*/default_usda",
+        init_state=AssetBaseCfg.InitialStateCfg(pos=(-10.0, -2.5, 2.0), rot=(1.0, 0.0, 0.0, 0.0)),
+        spawn=sim_utils.UsdFileCfg(
+            usd_path=f"{project_root}/assets/RobotSpace/default.usda",
+            scale=(2.0, 2.0, 2.0),
+        ),
+    )
 
     # Ground floor — large thin cuboid at z=0
     ground_floor = AssetBaseCfg(
@@ -104,7 +115,7 @@ class ObjectTableSceneCfg(TableCylinderSceneCfgWH):
     robot: ArticulationCfg = G1RobotPresets.g1_29dof_dex1_wholebody(init_pos=(-3.9, -2.81811, 0.8),
         init_rot=(1, 0, 0, 0))
 
-    contact_forces = ContactSensorCfg(prim_path="/World/envs/env_.*/Robot/.*", history_length=10, track_air_time=True, debug_vis=False)
+    contact_forces = ContactSensorCfg(prim_path="/World/envs/env_.*/Robot/.*", history_length=3, track_air_time=False, debug_vis=False)
     # 6. add camera configuration 
     front_camera = CameraPresets.g1_front_camera()
     left_wrist_camera = None
@@ -272,7 +283,7 @@ class MoveCylinderG129Dex1WholebodyEnvCfg(ManagerBasedRLEnvCfg):
         # simulation settings
         self.sim.dt = 0.005
         self.scene.contact_forces.update_period = self.sim.dt
-        self.sim.render_interval = 8
+        self.sim.render_interval = 16
         self.sim.physx.bounce_threshold_velocity = 0.01
         self.sim.physx.gpu_found_lost_aggregate_pairs_capacity = 1024 * 1024 * 4
         self.sim.physx.gpu_total_aggregate_pairs_capacity = 16 * 1024

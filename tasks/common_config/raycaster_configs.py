@@ -148,7 +148,7 @@ class RayCasterPresets:
             direction=(0.0, 0.0, -1.0),
             pos_offset=(0.0, 0.0, 0.1),
             update_period=0.1,
-            debug_vis=True,
+            debug_vis=False,
         )
 
     @classmethod
@@ -184,7 +184,7 @@ class RayCasterPresets:
             horizontal_res=0.5,
             pos_offset=(0.0, 0.0, 0.1),
             update_period=0.1,
-            debug_vis=True,
+            debug_vis=False,
         )
 
     @classmethod
@@ -199,23 +199,7 @@ class RayCasterPresets:
             mesh_prim_paths=[
                 MultiMeshRayCasterCfg.RaycastTargetCfg(
                     prim_expr="/World/envs/env_.*/ground_floor",
-                    track_mesh_transforms=True,
-                ),
-                MultiMeshRayCasterCfg.RaycastTargetCfg(
-                    prim_expr="/World/envs/env_.*/wall_north",
-                    track_mesh_transforms=True,
-                ),
-                MultiMeshRayCasterCfg.RaycastTargetCfg(
-                    prim_expr="/World/envs/env_.*/wall_south",
-                    track_mesh_transforms=True,
-                ),
-                MultiMeshRayCasterCfg.RaycastTargetCfg(
-                    prim_expr="/World/envs/env_.*/wall_east",
-                    track_mesh_transforms=True,
-                ),
-                MultiMeshRayCasterCfg.RaycastTargetCfg(
-                    prim_expr="/World/envs/env_.*/wall_west",
-                    track_mesh_transforms=True,
+                    track_mesh_transforms=False,
                 ),
                 MultiMeshRayCasterCfg.RaycastTargetCfg(
                     prim_expr="/World/envs/env_.*/lidar_box_1",
@@ -234,11 +218,11 @@ class RayCasterPresets:
                     track_mesh_transforms=True,
                 ),
             ],
-            channels=16,
+            channels=8,
             vertical_fov_range=(-30.0, 10.0),
             horizontal_fov_range=(0.0, 360.0),
-            horizontal_res=0.5,
+            horizontal_res=1.0,
             pos_offset=(0.0, 0.0, 0.1),
             update_period=0.1,
-            debug_vis=True,
+            debug_vis=False,
         )
