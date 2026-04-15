@@ -25,6 +25,7 @@ case "$SLAM_MODE" in
     ;;
 esac
 
-export FASTRTPS_DEFAULT_PROFILES_FILE=${FASTRTPS_DEFAULT_PROFILES_FILE:-/fastdds_profile.xml}
+export RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_cyclonedds_cpp}
+export CYCLONEDDS_URI=${CYCLONEDDS_URI:-file:///cyclonedds.xml}
 
 exec ros2 launch g1_sim_controller bringup.launch.py $LAUNCH_ARGS

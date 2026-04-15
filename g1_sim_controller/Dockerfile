@@ -50,9 +50,11 @@ COPY . /ros_ws
 # Source ROS2 Humble
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 
-# FastDDS profile: disable SHM transport, use UDPv4 with large buffers
-COPY src/config/fastdds_profile.xml /fastdds_profile.xml
-ENV FASTRTPS_DEFAULT_PROFILES_FILE=/fastdds_profile.xml
+# Switch ROS 2 middleware from FastDDS to CycloneDDS (more reliable in Docker)
+RUN apt-get update && apt-get install -y ros-humble-rmw-cyclonedds-cpp && rm -rf /var/lib/apt/lists/*
+ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+COPY src/config/cyclonedds.xml /cyclonedds.xml
+ENV CYCLONEDDS_URI=file:///cyclonedds.xml
 
 # Set the entrypoint
 COPY ros_entrypoint.sh /
