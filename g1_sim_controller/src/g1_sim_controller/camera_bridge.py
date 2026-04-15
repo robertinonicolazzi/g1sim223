@@ -7,7 +7,8 @@ from multiprocessing import shared_memory
 
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import Image
+from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
+from sensor_msgs.msg import Image, CompressedImage
 
 
 # Inline shared memory header (matches tools/shared_memory_utils.py)
@@ -39,7 +40,15 @@ class CameraBridge(Node):
         self.camera_name = self.get_parameter('camera_name').get_parameter_value().string_value
         self.frame_id = self.get_parameter('frame_id').get_parameter_value().string_value
 
-        self.publisher_ = self.create_publisher(Image, '/camera/image', 10)
+        camera_qos = QoSProfile(
+            reliability=ReliabilityPolicy.BEST_EFFORT,
+            history=HistoryPolicy.KEEP_LAST,
+            depth=1,
+        )
+        self.raw_pub = self.create_publisher(Image, '/camera/image', camera_qos)
+        self.compressed_pub = self.create_publisher(
+            CompressedImage, '/camera/image/compressed', camera_qos
+        )
 
         self.shm = None
         self.last_timestamp = 0
@@ -51,44 +60,55 @@ class CameraBridge(Node):
             f"publishing to /camera/image at {publish_rate} Hz"
         )
 
-    def _read_image(self):
-        """Read image from shared memory. Returns numpy BGR image or None."""
+    def _read_frame(self):
+        """Read frame from shared memory. Returns (header, payload) or (None, None)."""
         shm_name = f"isaac_{self.camera_name}_image_shm"
 
         if self.shm is None:
             try:
                 self.shm = shared_memory.SharedMemory(name=shm_name)
             except FileNotFoundError:
-                return None
+                return None, None
 
         header_data = bytes(self.shm.buf[:HEADER_SIZE])
         header = _SimpleImageHeader.from_buffer_copy(header_data)
 
         if header.timestamp <= self.last_timestamp:
-            return None
+            return None, None
 
         payload = bytes(self.shm.buf[HEADER_SIZE:HEADER_SIZE + header.data_size])
+        self.last_timestamp = header.timestamp
+        return header, payload
 
-        if header.encoding == 1:  # JPEG
+    def timer_callback(self):
+        header, payload = self._read_frame()
+        if header is None:
+            return
+
+        stamp = self.get_clock().now().to_msg()
+
+        if header.encoding == 1:  # JPEG — publish compressed directly, no decode
+            comp_msg = CompressedImage()
+            comp_msg.header.stamp = stamp
+            comp_msg.header.frame_id = self.frame_id
+            comp_msg.format = 'jpeg'
+            comp_msg.data = payload
+            self.compressed_pub.publish(comp_msg)
+
+            # Also publish raw for subscribers that need it
             encoded = np.frombuffer(payload, dtype=np.uint8)
             image = cv2.imdecode(encoded, cv2.IMREAD_COLOR)
+            if image is None:
+                return
         else:  # RAW
             image = np.frombuffer(payload, dtype=np.uint8)
             expected = header.height * header.width * header.channels
             if image.size != expected:
-                return None
+                return
             image = image.reshape(header.height, header.width, header.channels)
 
-        self.last_timestamp = header.timestamp
-        return image
-
-    def timer_callback(self):
-        image = self._read_image()
-        if image is None:
-            return
-
         msg = Image()
-        msg.header.stamp = self.get_clock().now().to_msg()
+        msg.header.stamp = stamp
         msg.header.frame_id = self.frame_id
         msg.height = image.shape[0]
         msg.width = image.shape[1]
@@ -97,7 +117,7 @@ class CameraBridge(Node):
         msg.step = image.shape[1] * image.shape[2]
         msg.data = image.tobytes()
 
-        self.publisher_.publish(msg)
+        self.raw_pub.publish(msg)
 
     def destroy_node(self):
         if self.shm is not None:

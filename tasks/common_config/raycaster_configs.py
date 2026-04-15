@@ -189,9 +189,9 @@ class RayCasterPresets:
 
     @classmethod
     def g1_room_lidar(cls) -> MultiMeshRayCasterCfg:
-        """MultiMeshRayCaster using LidarPattern targeting floor, 4 walls, and 4 boxes.
+        """MultiMeshRayCaster using LidarPattern targeting floor and 4 boxes.
 
-        16-channel LiDAR with 360-degree horizontal and -30/+10 degree vertical FOV.
+        8-channel LiDAR with 360-degree horizontal and -30/+10 degree vertical FOV.
         Attached to the robot d435_link (head area).
         """
         return RayCasterBaseCfg.get_lidar_config(

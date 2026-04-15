@@ -53,7 +53,7 @@ class ObjectTableSceneCfg(TableCylinderSceneCfgWH):
         ),
     )
 
-    # Ground floor — large thin cuboid at z=0
+    # Ground floor — collision only, no visual
     ground_floor = AssetBaseCfg(
         prim_path="/World/envs/env_.*/ground_floor",
         init_state=AssetBaseCfg.InitialStateCfg(pos=(0.0, 0.0, -0.05), rot=(1.0, 0.0, 0.0, 0.0)),
@@ -61,54 +61,15 @@ class ObjectTableSceneCfg(TableCylinderSceneCfgWH):
             size=(20.0, 20.0, 0.1),
             rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=True),
             collision_props=sim_utils.CollisionPropertiesCfg(),
-            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.5, 0.5, 0.5), metallic=0.0),
+            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.0, 0.0, 0.0), opacity=0.0),
         ),
     )
 
-    # 4 walls forming a 10m x 10m room
-    wall_north = AssetBaseCfg(
-        prim_path="/World/envs/env_.*/wall_north",
-        init_state=AssetBaseCfg.InitialStateCfg(pos=(0.0, 5.0, 1.5), rot=(1.0, 0.0, 0.0, 0.0)),
-        spawn=sim_utils.CuboidCfg(
-            size=(10.0, 0.1, 3.0),
-            rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=True),
-            collision_props=sim_utils.CollisionPropertiesCfg(),
-            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.7, 0.7, 0.7), metallic=0.0),
-        ),
-    )
-
-    wall_south = AssetBaseCfg(
-        prim_path="/World/envs/env_.*/wall_south",
-        init_state=AssetBaseCfg.InitialStateCfg(pos=(0.0, -5.0, 1.5), rot=(1.0, 0.0, 0.0, 0.0)),
-        spawn=sim_utils.CuboidCfg(
-            size=(10.0, 0.1, 3.0),
-            rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=True),
-            collision_props=sim_utils.CollisionPropertiesCfg(),
-            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.7, 0.7, 0.7), metallic=0.0),
-        ),
-    )
-
-    wall_east = AssetBaseCfg(
-        prim_path="/World/envs/env_.*/wall_east",
-        init_state=AssetBaseCfg.InitialStateCfg(pos=(5.0, 0.0, 1.5), rot=(1.0, 0.0, 0.0, 0.0)),
-        spawn=sim_utils.CuboidCfg(
-            size=(0.1, 10.0, 3.0),
-            rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=True),
-            collision_props=sim_utils.CollisionPropertiesCfg(),
-            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.7, 0.7, 0.7), metallic=0.0),
-        ),
-    )
-
-    wall_west = AssetBaseCfg(
-        prim_path="/World/envs/env_.*/wall_west",
-        init_state=AssetBaseCfg.InitialStateCfg(pos=(-5.0, 0.0, 1.5), rot=(1.0, 0.0, 0.0, 0.0)),
-        spawn=sim_utils.CuboidCfg(
-            size=(0.1, 10.0, 3.0),
-            rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=True),
-            collision_props=sim_utils.CollisionPropertiesCfg(),
-            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.7, 0.7, 0.7), metallic=0.0),
-        ),
-    )
+    # Walls removed
+    wall_north = None
+    wall_south = None
+    wall_east = None
+    wall_west = None
 
     # Humanoid robot w/ arms higher
     # 5. humanoid robot configuration

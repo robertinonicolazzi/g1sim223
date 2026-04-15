@@ -8,8 +8,10 @@
       <AllowMulticast>default</AllowMulticast>
     </General>
     <Internal>
-      <SocketReceiveBufferSize min="2MB" />
-      <SocketSendBufferSize min="2MB" />
+      <SocketReceiveBufferSize min="4MB" />
+      <SocketSendBufferSize min="4MB" />
+      <MaxMessageSize>65500B</MaxMessageSize>
+      <FragmentSize>64000B</FragmentSize>
     </Internal>
   </Domain>
 </CycloneDDS>
