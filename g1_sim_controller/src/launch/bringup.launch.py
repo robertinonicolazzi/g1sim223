@@ -41,7 +41,7 @@ def generate_launch_description():
 
     network_interface_arg = DeclareLaunchArgument(
         'network_interface',
-        default_value='lo',
+        default_value='eno1',
         description='Network interface to use for Unitree SDK'
     )
 
