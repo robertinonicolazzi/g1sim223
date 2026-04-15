@@ -146,6 +146,7 @@ def generate_launch_description():
         cmd=["bash", "-c", "until ros2 topic echo --once /scan > /dev/null 2>&1; do sleep 1; done"],
         output="screen",
         name="wait_for_scan",
+        condition=IfCondition(localization),
     )
     nav2_after_scan = RegisterEventHandler(
         OnProcessExit(
@@ -156,7 +157,8 @@ def generate_launch_description():
                     launch_arguments={'use_sim_time': str(use_sim_time)}.items(),
                 ),
             ],
-        )
+        ),
+        condition=IfCondition(localization),
     )
 
     return LaunchDescription([
