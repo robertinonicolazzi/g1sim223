@@ -8,6 +8,6 @@ TELEIMAGER_LOG_LEVEL=WARNING python sim_main.py \
     --livestream 2 \
     --enable_dex1_dds \
     --camera_include "front_camera" \
-    --camera_jpeg_quality 50 \
-    --render_interval 16 \
+    --camera_jpeg_quality 30 \
+    --render_interval 4 \
     --rendering_mode performance \

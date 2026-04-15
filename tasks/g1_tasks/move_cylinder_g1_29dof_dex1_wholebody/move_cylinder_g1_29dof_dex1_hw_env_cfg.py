@@ -283,7 +283,7 @@ class MoveCylinderG129Dex1WholebodyEnvCfg(ManagerBasedRLEnvCfg):
         # simulation settings
         self.sim.dt = 0.005
         self.scene.contact_forces.update_period = self.sim.dt
-        self.sim.render_interval = 16
+        self.sim.render_interval = self.decimation
         self.sim.physx.bounce_threshold_velocity = 0.01
         self.sim.physx.gpu_found_lost_aggregate_pairs_capacity = 1024 * 1024 * 4
         self.sim.physx.gpu_total_aggregate_pairs_capacity = 16 * 1024
