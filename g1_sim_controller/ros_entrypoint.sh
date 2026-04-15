@@ -25,6 +25,6 @@ case "$SLAM_MODE" in
     ;;
 esac
 
-export FASTRTPS_DEFAULT_PROFILES_FILE=/ros_ws/install/g1_sim_controller/share/g1_sim_controller/config/fastdds_profile.xml
+export FASTRTPS_DEFAULT_PROFILES_FILE=${FASTRTPS_DEFAULT_PROFILES_FILE:-/fastdds_profile.xml}
 
 exec ros2 launch g1_sim_controller bringup.launch.py $LAUNCH_ARGS

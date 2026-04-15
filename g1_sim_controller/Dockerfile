@@ -50,6 +50,10 @@ COPY . /ros_ws
 # Source ROS2 Humble
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 
+# FastDDS profile: disable SHM transport, use UDPv4 with large buffers
+COPY src/config/fastdds_profile.xml /fastdds_profile.xml
+ENV FASTRTPS_DEFAULT_PROFILES_FILE=/fastdds_profile.xml
+
 # Set the entrypoint
 COPY ros_entrypoint.sh /
 RUN chmod +x /ros_entrypoint.sh
