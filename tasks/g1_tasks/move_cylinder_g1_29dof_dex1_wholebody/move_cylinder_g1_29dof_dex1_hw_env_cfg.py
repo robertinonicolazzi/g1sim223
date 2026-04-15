@@ -48,7 +48,7 @@ class ObjectTableSceneCfg(TableCylinderSceneCfgWH):
         prim_path="/World/envs/env_.*/default_usda",
         init_state=AssetBaseCfg.InitialStateCfg(pos=(-10.0, -2.5, 2.0), rot=(1.0, 0.0, 0.0, 0.0)),
         spawn=sim_utils.UsdFileCfg(
-            usd_path=f"{project_root}/assets/RobotSpace/default.usda",
+            usd_path=f"{project_root}/assets/RobotSpace.usdz",
             scale=(2.0, 2.0, 2.0),
         ),
     )

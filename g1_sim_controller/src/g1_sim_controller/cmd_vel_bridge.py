@@ -14,7 +14,7 @@ class CmdVelBridge(Node):
         super().__init__('cmd_vel_bridge')
 
         # Declare parameters for network interface and height
-        self.declare_parameter('network_interface', 'ens5')
+        self.declare_parameter('network_interface', 'lo')
         self.declare_parameter('default_height', 0.8)
 
         network_interface = self.get_parameter('network_interface').get_parameter_value().string_value

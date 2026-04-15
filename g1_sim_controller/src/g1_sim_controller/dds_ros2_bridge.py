@@ -46,7 +46,7 @@ class DdsRos2Bridge(Node):
         super().__init__('dds_ros2_bridge')
 
         # ── Parameters ──────────────────────────────────────────────
-        self.declare_parameter('network_interface', 'ens5')
+        self.declare_parameter('network_interface', 'lo')
         self.declare_parameter('default_height', 0.8)
         self.declare_parameter('odom_frame', 'odom')
         self.declare_parameter('base_frame', 'base_link')
