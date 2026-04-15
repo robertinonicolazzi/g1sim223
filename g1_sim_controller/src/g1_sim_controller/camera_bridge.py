@@ -7,7 +7,6 @@ from multiprocessing import shared_memory
 
 import rclpy
 from rclpy.node import Node
-from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 from sensor_msgs.msg import Image, CompressedImage
 
 
@@ -40,14 +39,9 @@ class CameraBridge(Node):
         self.camera_name = self.get_parameter('camera_name').get_parameter_value().string_value
         self.frame_id = self.get_parameter('frame_id').get_parameter_value().string_value
 
-        camera_qos = QoSProfile(
-            reliability=ReliabilityPolicy.BEST_EFFORT,
-            history=HistoryPolicy.KEEP_LAST,
-            depth=1,
-        )
-        self.raw_pub = self.create_publisher(Image, '/camera/image', camera_qos)
+        self.raw_pub = self.create_publisher(Image, '/camera/image', 1)
         self.compressed_pub = self.create_publisher(
-            CompressedImage, '/camera/image/compressed', camera_qos
+            CompressedImage, '/camera/image/compressed', 1
         )
 
         self.shm = None
@@ -87,15 +81,8 @@ class CameraBridge(Node):
 
         stamp = self.get_clock().now().to_msg()
 
-        if header.encoding == 1:  # JPEG — publish compressed directly, no decode
-            comp_msg = CompressedImage()
-            comp_msg.header.stamp = stamp
-            comp_msg.header.frame_id = self.frame_id
-            comp_msg.format = 'jpeg'
-            comp_msg.data = payload
-            self.compressed_pub.publish(comp_msg)
-
-            # Also publish raw for subscribers that need it
+        # Decode to BGR image
+        if header.encoding == 1:  # JPEG
             encoded = np.frombuffer(payload, dtype=np.uint8)
             image = cv2.imdecode(encoded, cv2.IMREAD_COLOR)
             if image is None:
@@ -107,17 +94,33 @@ class CameraBridge(Node):
                 return
             image = image.reshape(header.height, header.width, header.channels)
 
-        msg = Image()
-        msg.header.stamp = stamp
-        msg.header.frame_id = self.frame_id
-        msg.height = image.shape[0]
-        msg.width = image.shape[1]
-        msg.encoding = 'bgr8'
-        msg.is_bigendian = False
-        msg.step = image.shape[1] * image.shape[2]
-        msg.data = image.tobytes()
+        # Downscale for raw publish to keep under DDS buffer limits
+        small = cv2.resize(image, (160, 120), interpolation=cv2.INTER_NEAREST)
 
-        self.raw_pub.publish(msg)
+        raw_msg = Image()
+        raw_msg.header.stamp = stamp
+        raw_msg.header.frame_id = self.frame_id
+        raw_msg.height = small.shape[0]
+        raw_msg.width = small.shape[1]
+        raw_msg.encoding = 'bgr8'
+        raw_msg.is_bigendian = False
+        raw_msg.step = small.shape[1] * small.shape[2]
+        raw_msg.data = small.tobytes()
+        self.raw_pub.publish(raw_msg)
+
+        # Publish compressed (JPEG passthrough or re-encode)
+        comp_msg = CompressedImage()
+        comp_msg.header.stamp = stamp
+        comp_msg.header.frame_id = self.frame_id
+        comp_msg.format = 'jpeg'
+        if header.encoding == 1:
+            comp_msg.data = payload
+        else:
+            ok, buf = cv2.imencode('.jpg', image, [cv2.IMWRITE_JPEG_QUALITY, 30])
+            if not ok:
+                return
+            comp_msg.data = buf.tobytes()
+        self.compressed_pub.publish(comp_msg)
 
     def destroy_node(self):
         if self.shm is not None:
