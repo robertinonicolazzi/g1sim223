@@ -46,10 +46,9 @@ class ObjectTableSceneCfg(TableCylinderSceneCfgWH):
 
     default_usda = AssetBaseCfg(
         prim_path="/World/envs/env_.*/default_usda",
-        init_state=AssetBaseCfg.InitialStateCfg(pos=(-10.0, -2.5, 2.0), rot=(1.0, 0.0, 0.0, 0.0)),
+        init_state=AssetBaseCfg.InitialStateCfg(pos=(-10.0, -2.5, 0), rot=(1.0, 0.0, 0.0, 0.0)),
         spawn=sim_utils.UsdFileCfg(
-            usd_path=f"{project_root}/assets/meshrs.usd",
-            scale=(2.0, 2.0, 2.0),
+            usd_path=f"{project_root}/assets/meshrs.usd"
         ),
     )
 
@@ -58,7 +57,7 @@ class ObjectTableSceneCfg(TableCylinderSceneCfgWH):
         prim_path="/World/envs/env_.*/ground_floor",
         init_state=AssetBaseCfg.InitialStateCfg(pos=(0.0, 0.0, -0.05), rot=(1.0, 0.0, 0.0, 0.0)),
         spawn=sim_utils.CuboidCfg(
-            size=(20.0, 20.0, 0.1),
+            size=(30.0, 30.0, 0.1),
             rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=True),
             collision_props=sim_utils.CollisionPropertiesCfg(),
             visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.0, 0.0, 0.0), opacity=0.0),
