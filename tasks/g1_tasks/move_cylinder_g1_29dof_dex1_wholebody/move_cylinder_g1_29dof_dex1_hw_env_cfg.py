@@ -17,7 +17,7 @@ from isaaclab.managers import SceneEntityCfg
 from isaaclab.managers import TerminationTermCfg as DoneTerm
 from isaaclab.managers import RewardTermCfg as RewTerm
 from isaaclab.utils import configclass
-from isaaclab.assets import ArticulationCfg, AssetBaseCfg, RigidObjectCfg
+from isaaclab.assets import ArticulationCfg, AssetBaseCfg
 from isaaclab.sensors import ContactSensorCfg
 from . import mdp
 # use Isaac Lab native event system
@@ -48,7 +48,7 @@ class ObjectTableSceneCfg(TableCylinderSceneCfgWH):
         prim_path="/World/envs/env_.*/default_usda",
         init_state=AssetBaseCfg.InitialStateCfg(pos=(-10.0, -2.5, 2.0), rot=(1.0, 0.0, 0.0, 0.0)),
         spawn=sim_utils.UsdFileCfg(
-            usd_path=f"{project_root}/assets/RobotSpace.usdz",
+            usd_path=f"{project_root}/assets/meshrs.usd",
             scale=(2.0, 2.0, 2.0),
         ),
     )
@@ -83,69 +83,18 @@ class ObjectTableSceneCfg(TableCylinderSceneCfgWH):
     right_wrist_camera = None
     robot_camera = None
 
-    # 7. lidar target boxes
-    lidar_box_1 = RigidObjectCfg(
-        prim_path="/World/envs/env_.*/lidar_box_1",
-        init_state=RigidObjectCfg.InitialStateCfg(
-            pos=(2.1, -2.8, 0.84),
-            rot=(1, 0, 0, 0),
-        ),
-        spawn=sim_utils.CuboidCfg(
-            size=(0.3, 0.3, 0.4),
-            rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=True),
-            mass_props=sim_utils.MassPropertiesCfg(mass=1.0),
-            collision_props=sim_utils.CollisionPropertiesCfg(),
-            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.0, 0.0, 1.0), metallic=0.2),
-        ),
+    # 7. lidar sensor configuration (static meshes from meshrs.usd)
+    lidar = RayCasterPresets.g1_static_mesh_lidar(
+        mesh_prim_exprs=[
+            f"/World/envs/env_.*/default_usda/gauss/w{i}" for i in range(19)
+        ] + [
+            "/World/envs/env_.*/default_usda/gauss/shelve/ObjectCapture/Geometry/Mesh/Mesh",
+            "/World/envs/env_.*/default_usda/gauss/shelve_01/ObjectCapture/Geometry/Mesh/Mesh",
+            "/World/envs/env_.*/default_usda/gauss/shelve_02/ObjectCapture/Geometry/Mesh/Mesh",
+            "/World/envs/env_.*/default_usda/gauss/shelve_03/ObjectCapture/Geometry/Mesh/Mesh",
+            "/World/envs/env_.*/ground_floor",
+        ],
     )
-
-    lidar_box_2 = RigidObjectCfg(
-        prim_path="/World/envs/env_.*/lidar_box_2",
-        init_state=RigidObjectCfg.InitialStateCfg(
-            pos=(1.1, -1.8, 0.84),
-            rot=(1, 0, 0, 0),
-        ),
-        spawn=sim_utils.CuboidCfg(
-            size=(0.25, 0.25, 0.5),
-            rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=True),
-            mass_props=sim_utils.MassPropertiesCfg(mass=1.0),
-            collision_props=sim_utils.CollisionPropertiesCfg(),
-            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.0, 1.0, 0.0), metallic=0.2),
-        ),
-    )
-
-    lidar_box_3 = RigidObjectCfg(
-        prim_path="/World/envs/env_.*/lidar_box_3",
-        init_state=RigidObjectCfg.InitialStateCfg(
-            pos=(0.1, -2.8, 0.4),
-            rot=(1, 0, 0, 0),
-        ),
-        spawn=sim_utils.CuboidCfg(
-            size=(0.4, 0.4, 0.8),
-            rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=True),
-            mass_props=sim_utils.MassPropertiesCfg(mass=1.0),
-            collision_props=sim_utils.CollisionPropertiesCfg(),
-            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(1.0, 1.0, 0.0), metallic=0.2),
-        ),
-    )
-
-    lidar_box_4 = RigidObjectCfg(
-        prim_path="/World/envs/env_.*/lidar_box_4",
-        init_state=RigidObjectCfg.InitialStateCfg(
-            pos=(1.1, -3.8, 0.3),
-            rot=(1, 0, 0, 0),
-        ),
-        spawn=sim_utils.CuboidCfg(
-            size=(0.35, 0.35, 0.6),
-            rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=True),
-            mass_props=sim_utils.MassPropertiesCfg(mass=1.0),
-            collision_props=sim_utils.CollisionPropertiesCfg(),
-            visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(1.0, 0.5, 0.0), metallic=0.2),
-        ),
-    )
-
-    # 8. lidar sensor configuration (floor + walls + boxes)
-    lidar = RayCasterPresets.g1_room_lidar()
 ##
 # MDP settings
 ##

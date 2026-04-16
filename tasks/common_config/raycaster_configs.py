@@ -226,3 +226,53 @@ class RayCasterPresets:
             update_period=0.1,
             debug_vis=False,
         )
+
+    @classmethod
+    def g1_static_mesh_lidar(
+        cls,
+        mesh_prim_exprs: List[str] = None,
+        channels: int = 8,
+        vertical_fov_range: Tuple[float, float] = (-30.0, 10.0),
+        horizontal_fov_range: Tuple[float, float] = (0.0, 360.0),
+        horizontal_res: float = 1.0,
+        pos_offset: Tuple[float, float, float] = (0.0, 0.0, 0.1),
+        update_period: float = 0.1,
+        debug_vis: bool = False,
+    ) -> MultiMeshRayCasterCfg:
+        """MultiMeshRayCaster using LidarPattern targeting a list of static meshes.
+
+        Args:
+            mesh_prim_exprs: List of prim expression strings for static meshes to detect.
+            channels: Number of vertical beams.
+            vertical_fov_range: Vertical FOV range in degrees (min, max).
+            horizontal_fov_range: Horizontal FOV range in degrees (min, max).
+            horizontal_res: Horizontal angular resolution in degrees.
+            pos_offset: Position offset from the attachment link (x, y, z).
+            update_period: Sensor update period in seconds.
+            debug_vis: Enable debug visualization.
+
+        Returns:
+            MultiMeshRayCasterCfg: Raycaster configuration.
+        """
+        if mesh_prim_exprs is None:
+            mesh_prim_exprs = []
+
+        targets = [
+            MultiMeshRayCasterCfg.RaycastTargetCfg(
+                prim_expr=expr,
+                track_mesh_transforms=False,
+            )
+            for expr in mesh_prim_exprs
+        ]
+
+        return RayCasterBaseCfg.get_lidar_config(
+            prim_path="/World/envs/env_.*/Robot/d435_link",
+            mesh_prim_paths=targets,
+            channels=channels,
+            vertical_fov_range=vertical_fov_range,
+            horizontal_fov_range=horizontal_fov_range,
+            horizontal_res=horizontal_res,
+            pos_offset=pos_offset,
+            update_period=update_period,
+            debug_vis=debug_vis,
+        )
