@@ -1,5 +1,8 @@
 FROM ros:humble
 
+RUN sed -i 's/archive.ubuntu.com/mirrors.kernel.org/g' /etc/apt/sources.list && \
+  sed -i 's/security.ubuntu.com/mirrors.kernel.org/g' /etc/apt/sources.list
+
 # Install basic development tools
 RUN apt-get update && apt-get install -y \
   python3-pip \
@@ -28,8 +31,7 @@ RUN git clone https://github.com/unitreerobotics/unitree_sdk2_python.git /lib/un
   export CYCLONEDDS_HOME=/lib/cyclonedds/install && \
   pip3 install .
 
-RUN sed -i 's/archive.ubuntu.com/mirrors.kernel.org/g' /etc/apt/sources.list && \
-  sed -i 's/security.ubuntu.com/mirrors.kernel.org/g' /etc/apt/sources.list
+
 
 RUN apt-get install -y \
   ros-humble-pointcloud-to-laserscan \
