@@ -6,7 +6,7 @@ TELEIMAGER_LOG_LEVEL=WARNING python sim_main.py \
     --robot_type g129 \
     --headless \
     --livestream 2 \
-    --enable_dex1_dds \
+    --enable_inspire_dds \
     --camera_include "front_camera" \
     --camera_jpeg_quality 30 \
     --render_interval 4 \
