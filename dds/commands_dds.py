@@ -75,6 +75,9 @@ class RunCommandDDS(DDSObject):
         Returns:
             Dict: the run command, if no command return None
         """
+        cached = getattr(self, '_cached_cmd', None)
+        if cached:
+            return cached
         if self.output_shm:
             return self.output_shm.read_data()
         return None
