@@ -57,7 +57,7 @@ class ObjectTableSceneCfg(TableCylinderSceneCfgWH):
         prim_path="/World/envs/env_.*/ground_floor",
         init_state=AssetBaseCfg.InitialStateCfg(pos=(0.0, 0.0, -0.05), rot=(1.0, 0.0, 0.0, 0.0)),
         spawn=sim_utils.CuboidCfg(
-            size=(30.0, 30.0, 0.1),
+            size=(50.0, 50.0, 0.1),
             rigid_props=sim_utils.RigidBodyPropertiesCfg(kinematic_enabled=True),
             collision_props=sim_utils.CollisionPropertiesCfg(),
             visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=(0.0, 0.0, 0.0), opacity=0.0),
