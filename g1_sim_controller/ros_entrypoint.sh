@@ -11,7 +11,7 @@ colcon build --symlink-install
 source "/ros_ws/install/setup.bash"
 
 # SLAM_MODE: mapping (default), localization, none
-SLAM_MODE="${SLAM_MODE:-mapping}"
+SLAM_MODE="${SLAM_MODE:-localization}"
 
 case "$SLAM_MODE" in
   localization)

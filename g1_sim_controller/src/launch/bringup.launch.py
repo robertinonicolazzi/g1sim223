@@ -137,6 +137,13 @@ def generate_launch_description():
         ],
     )
 
+    # Wait for /sim_state to be published before starting everything
+    wait_for_sim_state = ExecuteProcess(
+        cmd=["bash", "-c", "until ros2 topic echo --once /sim_state > /dev/null 2>&1; do sleep 1; done"],
+        output="screen",
+        name="wait_for_sim_state",
+    )
+
     # Wait for /scan to be published before launching Nav2
     nav_launch_dir = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
@@ -161,17 +168,27 @@ def generate_launch_description():
         condition=IfCondition(localization),
     )
 
+    everything_after_sim_state = RegisterEventHandler(
+        OnProcessExit(
+            target_action=wait_for_sim_state,
+            on_exit=[
+                basic_telemetry_node,
+                dds_ros2_bridge_node,
+                camera_bridge_node,
+                pose_publisher_node,
+                pc_to_laserscan_node,
+                slam_node,
+                slam_node_loc,
+                wait_for_scan,
+                nav2_after_scan,
+            ],
+        ),
+    )
+
     return LaunchDescription([
         network_interface_arg,
         mapping_arg,
         localization_arg,
-        basic_telemetry_node,
-        dds_ros2_bridge_node,
-        camera_bridge_node,
-        pose_publisher_node,
-        pc_to_laserscan_node,
-        slam_node,
-        slam_node_loc,
-        wait_for_scan,
-        nav2_after_scan,
+        wait_for_sim_state,
+        everything_after_sim_state,
     ])
