@@ -52,6 +52,7 @@ class DdsRos2Bridge(Node):
         self.declare_parameter('base_frame', 'base_link')
         self.declare_parameter('publish_tf', True)
         self.declare_parameter('velocity_scale', 2.2)
+        self.declare_parameter('rotation_scale', 4.0)
 
         network_interface = self.get_parameter('network_interface').get_parameter_value().string_value
         self.default_height = self.get_parameter('default_height').get_parameter_value().double_value
@@ -59,6 +60,7 @@ class DdsRos2Bridge(Node):
         self.base_frame = self.get_parameter('base_frame').get_parameter_value().string_value
         self.publish_tf_flag = self.get_parameter('publish_tf').get_parameter_value().bool_value
         self.velocity_scale = self.get_parameter('velocity_scale').get_parameter_value().double_value
+        self.rotation_scale = self.get_parameter('rotation_scale').get_parameter_value().double_value
 
         # ── Robot state tracking ────────────────────────────────────
         self._position = np.array([0.0, 0.0, 0.0])
@@ -108,6 +110,8 @@ class DdsRos2Bridge(Node):
 
         if self.velocity_scale != 1.0:
             self.get_logger().info(f"Velocity scale: {self.velocity_scale}x")
+        if self.rotation_scale != 1.0:
+            self.get_logger().info(f"Rotation scale: {self.rotation_scale}x")
         self.get_logger().info("dds_ros2_bridge node started")
         self.get_logger().info("  Subscribing: /cmd_vel")
         self.get_logger().info("  Publishing:  /odom")
@@ -168,7 +172,7 @@ class DdsRos2Bridge(Node):
 
         x_vel = float(msg.linear.x) * self.velocity_scale
         y_vel = float(msg.linear.y) * self.velocity_scale
-        yaw_vel = float(msg.angular.z) * self.velocity_scale
+        yaw_vel = float(msg.angular.z) * self.rotation_scale
 
         cmd_str = str([float(x_vel), -float(y_vel), float(yaw_vel), float(self.default_height)])
         self.get_logger().info(f"Forwarding cmd_vel: x={x_vel:.2f}, y={y_vel:.2f}, w={yaw_vel:.2f}")
