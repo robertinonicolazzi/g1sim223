@@ -46,6 +46,9 @@ class CameraBridge(Node):
 
         self.shm = None
         self.last_timestamp = 0
+        self._last_shm_ts = None
+        self._shm_frame_count = 0
+        self._shm_log_timer = self.create_timer(1.0, self._log_shm_rate)
 
         self.timer = self.create_timer(1.0 / publish_rate, self.timer_callback)
 
@@ -70,9 +73,18 @@ class CameraBridge(Node):
         if header.timestamp <= self.last_timestamp:
             return None, None
 
+        # Track new frames arriving in shared memory
+        self._shm_frame_count += 1
+        self._last_shm_ts = header.timestamp
+
         payload = bytes(self.shm.buf[HEADER_SIZE:HEADER_SIZE + header.data_size])
         self.last_timestamp = header.timestamp
         return header, payload
+
+    def _log_shm_rate(self):
+        count = self._shm_frame_count
+        self._shm_frame_count = 0
+        self.get_logger().info(f"[SHM] new frames last second: {count} Hz")
 
     def timer_callback(self):
         header, payload = self._read_frame()
@@ -94,18 +106,15 @@ class CameraBridge(Node):
                 return
             image = image.reshape(header.height, header.width, header.channels)
 
-        # Downscale for raw publish to keep under DDS buffer limits
-        small = cv2.resize(image, (160, 120), interpolation=cv2.INTER_NEAREST)
-
         raw_msg = Image()
         raw_msg.header.stamp = stamp
         raw_msg.header.frame_id = self.frame_id
-        raw_msg.height = small.shape[0]
-        raw_msg.width = small.shape[1]
+        raw_msg.height = image.shape[0]
+        raw_msg.width = image.shape[1]
         raw_msg.encoding = 'bgr8'
         raw_msg.is_bigendian = False
-        raw_msg.step = small.shape[1] * small.shape[2]
-        raw_msg.data = small.tobytes()
+        raw_msg.step = image.shape[1] * image.shape[2]
+        raw_msg.data = image.tobytes()
         self.raw_pub.publish(raw_msg)
 
         # Publish compressed (JPEG passthrough or re-encode)
