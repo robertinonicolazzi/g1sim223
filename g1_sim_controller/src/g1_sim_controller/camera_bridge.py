@@ -84,7 +84,7 @@ class CameraBridge(Node):
     def _log_shm_rate(self):
         count = self._shm_frame_count
         self._shm_frame_count = 0
-        self.get_logger().info(f"[SHM] new frames last second: {count} Hz")
+        # self.get_logger().info(f"[SHM] new frames last second: {count} Hz")
 
     def timer_callback(self):
         header, payload = self._read_frame()

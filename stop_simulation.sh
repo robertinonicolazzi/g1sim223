@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# This script stops and cleans up the running docker containers for the G1 simulation.
+# It stops:
+# - g1_sim_controller: The container running the robot control stack.
+# - g1_sim_isaaclab: The container running the physics simulator.
+
 CONTAINERS=("g1_sim_controller" "g1_sim_isaaclab")
 
 for CONTAINER in "${CONTAINERS[@]}"; do

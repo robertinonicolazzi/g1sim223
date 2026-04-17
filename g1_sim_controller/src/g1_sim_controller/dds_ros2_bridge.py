@@ -52,7 +52,7 @@ class DdsRos2Bridge(Node):
         self.declare_parameter('base_frame', 'base_link')
         self.declare_parameter('publish_tf', True)
         self.declare_parameter('velocity_scale', 2.2)
-        self.declare_parameter('rotation_scale', 4.0)
+        self.declare_parameter('rotation_scale', 3.5)
 
         network_interface = self.get_parameter('network_interface').get_parameter_value().string_value
         self.default_height = self.get_parameter('default_height').get_parameter_value().double_value
