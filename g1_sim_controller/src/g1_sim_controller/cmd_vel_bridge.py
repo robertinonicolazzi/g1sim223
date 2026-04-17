@@ -24,7 +24,7 @@ class CmdVelBridge(Node):
         
         # Initialize SDK
         try:
-            ChannelFactoryInitialize(0, network_interface)
+            ChannelFactoryInitialize(2, network_interface)
             self.cmd_pub = ChannelPublisher("rt/run_command/cmd", String_)
             self.cmd_pub.Init()
             self.get_logger().info("Unitree SDK Publisher initialized on 'rt/run_command/cmd'")

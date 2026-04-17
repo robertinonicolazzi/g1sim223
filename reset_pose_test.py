@@ -19,7 +19,7 @@ def publish_reset_category(category: int,publisher):
 
 if __name__ == "__main__":
     # initialize DDS
-    ChannelFactoryInitialize(0, "eno1")
+    ChannelFactoryInitialize(2, "eno1")
     publisher = ChannelPublisher("rt/reset_pose/cmd", String_)
     publisher.Init()
 

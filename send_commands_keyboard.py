@@ -260,7 +260,7 @@ if __name__ == "__main__":
             
         # initialize DDS
         print("initializing DDS communication...")
-        ChannelFactoryInitialize(0, "eno1")
+        ChannelFactoryInitialize(2, "eno1")
         publisher = ChannelPublisher("rt/run_command/cmd", String_)
         publisher.Init()
         print("DDS communication initialized")

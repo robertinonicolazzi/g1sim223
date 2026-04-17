@@ -80,7 +80,7 @@ class DdsRos2Bridge(Node):
         # ── DDS initialisation ──────────────────────────────────────
         if DDS_AVAILABLE:
             self.get_logger().info(f"Initializing DDS on interface: {network_interface}")
-            ChannelFactoryInitialize(0, network_interface)
+            ChannelFactoryInitialize(2, network_interface)
             self.dds_cmd_pub = ChannelPublisher("rt/run_command/cmd", String_)
             self.dds_cmd_pub.Init()
             self.get_logger().info("DDS publisher ready on 'rt/run_command/cmd'")

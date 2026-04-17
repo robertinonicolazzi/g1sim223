@@ -20,7 +20,7 @@ docker run -dt \
     --ipc host \
     --restart unless-stopped \
     -v "${PROJECT_ROOT}/g1_sim_controller:/ros_ws" \
-    -e ROS_DOMAIN_ID=0 \
+    -e ROS_DOMAIN_ID=2 \
     -e DISPLAY=${DISPLAY:-:1} \
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
     ${IMAGE_NAME}
